@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios'
 import { StyleSheet, View, Text, TextInput, Button, TouchableOpacity, TouchableWithoutFeedback, Keyboard, FlatList, Modal } from 'react-native';
 import { globalStyles } from '../styles/global';
@@ -27,22 +27,29 @@ export default function Home({ navigation }) {
         navigation.navigate('Payment', { username: username })
     }
 
-    console.log(navigation.getParam('username'))
+    console.log(navigation.getParam('username'), 'usernmae check')
 
     username = navigation.getParam('username')
     // let balance
     // let associated_bank
 
-    axios.get('http://192.168.0.159:8080/customers/' + username).then(res => {
-        console.log(res.data.data)
-        // associated_bank = res.data.data.associated_bank
-        // balance = res.data.data.balance
-        setBalance(res.data.data.balance)
-        setassociated_bank(res.data.data.associated_bank)
-        console.log(balance, 'yash')
-        // console.log('uiuiu')
-        // navigation.navigate('Home', { userID: 'A1' })
-    })
+    React.useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            console.log('Refreshed!');
+        });
+        console.log('bbahbahbahbahbahbhbh')
+        username = navigation.getParam('username')
+        axios.get('http://192.168.0.159:8080/customers/' + username).then(res => {
+            // console.log(res.data.data)
+            // associated_bank = res.data.data.associated_bank
+            // balance = res.data.data.balance
+            setBalance(res.data.data.balance)
+            setassociated_bank(res.data.data.associated_bank)
+            // console.log(balance, 'yash')
+            // console.log('uiuiu')
+            // navigation.navigate('Home', { userID: 'A1' })
+        })
+    }, [navigation])
 
     // this.getvalue()
     console.log(balance, 'yash')

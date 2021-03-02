@@ -40,7 +40,7 @@ exports.new = async function (req, res) {
         customer.balance = req.body.balance
         customer.associated_bank = req.body.associated_bank
         customer.password = hashedPassword;
-
+        customer.phone_number = req.body.phone_number
         customer.save(function (err) {
             res.json({
                 message: 'New customer created!',

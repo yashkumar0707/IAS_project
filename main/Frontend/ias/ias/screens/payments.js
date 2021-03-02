@@ -13,15 +13,23 @@ const ReviewSchema = yup.object({
     //     return parseInt(val) < 6 && parseInt(val) > 0;
     // })
 })
-const socket = io("http://192.168.0.159:3000")
 // const client = new W3CWebSocket('ws://192.168.0.159:3000');
 
 export default function Payment({ navigation }) {
 
     const loginHandle = (values) => {
+        const socket = io("http://192.168.0.159:3001")
         values.username = 'Yash'
         //console.log('uash')
         socket.emit('chat message', values)
+        socket.on("message", data => {
+            if (data == "successful") {
+                navigation.navigate('Home')
+                // console.log('here')
+                socket.close()
+            }
+        });
+
         // navigation.navigate('Home', { userID: 'A1' })
         // client.onopen = () => {
         //     console.log('WebSocket Client Connected');

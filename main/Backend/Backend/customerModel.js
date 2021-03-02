@@ -21,7 +21,11 @@ var customerSchema = mongoose.Schema({
     associated_bank: {
         type: String,
         required: true
-    }
+    },
+    phone_number: {
+        type: Number,
+        required: true
+    },
 });
 
 var Customer = module.exports = mongoose.model('customer', customerSchema);
