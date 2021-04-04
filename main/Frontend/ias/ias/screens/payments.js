@@ -5,6 +5,9 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import io from "socket.io-client"
+import { Cache } from "react-native-cache";
+import AsyncStorage from '@react-native-community/async-storage';
+
 // import { w3cwebsocket as W3CWebSocket } from "websocket";
 const ReviewSchema = yup.object({
     amount: yup.string().required().min(1),
@@ -15,8 +18,9 @@ const ReviewSchema = yup.object({
 })
 // const client = new W3CWebSocket('ws://192.168.0.159:3000');
 
-export default function Payment({ navigation }) {
-
+export default function Payment({ navigation, cache }) {
+    let getinfo = navigation.getParam('sendinfo')
+    console.log(getinfo.username, getinfo.conn)
     const loginHandle = (values) => {
         const socket = io("http://192.168.0.159:3001")
         values.username = 'Yash'
@@ -28,13 +32,29 @@ export default function Payment({ navigation }) {
                 // console.log('here')
                 socket.close()
             }
-        });
-
-        // navigation.navigate('Home', { userID: 'A1' })
-        // client.onopen = () => {
-        //     console.log('WebSocket Client Connected');
-        // };
+        })
     }
+
+
+
+    const loginHandleOffline = async (values) => {
+        try {
+            const value = await AsyncStorage.getItem("hello");
+            if (value !== null) {
+                // We have data!!
+                console.log(value);
+                navigation.navigate('Home')
+            }
+        } catch (error) {
+            // Error retrieving data
+        }
+        console.log('yash')
+    };
+    // navigation.navigate('Home', { userID: 'A1' })
+    // client.onopen = () => {
+    //     console.log('WebSocket Client Connected');
+    // };
+
     return (
         <View style={globalStyles.container}>
             <View style={styles.container}>
@@ -64,7 +84,14 @@ export default function Payment({ navigation }) {
                                 keyboardType='numeric'
                             >
                             </TextInput>
-                            <Button title='Send' color='maroon' onPress={() => loginHandle(props.values)}></Button>
+                            {getinfo.conn &&
+                                // <Button title='Send' color='maroon' onPress={() => loginHandle(props.values)}></Button>
+                                <Button title='Send' color='maroon' onPress={() => loginHandle(props.values)}></Button>
+
+                            }
+                            {!getinfo.conn &&
+                                <Button title='Send' color='maroon' onPress={() => loginHandleOffline(props.values)}></Button>
+                            }
                         </View>
                     )}
                 </Formik>

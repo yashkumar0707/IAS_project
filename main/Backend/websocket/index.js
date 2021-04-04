@@ -24,6 +24,7 @@ io.on("connection", socket => {
 http.listen(port, () => console.log("server running on port:" + port));
 
 Customer = require('./customerModels');
+Transaction = require('./transactionModels')
 mongoose.connect('mongodb+srv://iasproject:181it231@cluster0.hvfez.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true });
 var db = mongoose.connection;
 mongoose.set('useFindAndModify', false);
@@ -87,6 +88,15 @@ const check = async (socket, values) => {
                                             console.log(customer7)
                                             console.log('unlock 1')
                                         })
+                                    const trans = new Transaction({
+                                        amount: values.amount,
+                                        username: values.username,
+                                        merchant_phone: values.number
+                                    });
+                                    trans.save(function (err) {
+                                        console.log(err)
+                                    })
+
                                 })
 
                         }

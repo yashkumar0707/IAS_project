@@ -5,6 +5,7 @@ import { globalStyles } from '../styles/global';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Formik } from 'formik';
 import * as yup from 'yup';
+import NetInfo from "@react-native-community/netinfo";
 
 const ReviewSchema = yup.object({
     username: yup.string().required().min(4),
@@ -14,8 +15,16 @@ const ReviewSchema = yup.object({
     // })
 })
 
-
-
+var conn = ''
+const unsubscribe = NetInfo.addEventListener(state => {
+    console.log("Connection type", state.type);
+    console.log("Is connected?", state.isConnected);
+    conn = state.isConnected
+});
+// let sendinfo = []
+// sendinfo.conn = conn
+// sendinfo.username = this.state.username
+unsubscribe()
 export default function Login({ navigation }) {
     console.disableYellowBox = true;
     const loginHandle = async (values) => {
@@ -63,6 +72,51 @@ export default function Login({ navigation }) {
 
     }
 
+    const loginHandleOffline = async (values) => {
+        console.log(values)
+        try {
+            // let ans = await fetch('http://192.168.0.159:8080/customers/login/', {
+            //     method: 'POST',
+            //     headers: {
+            //         Accept: 'application/json',
+            //         'Content-Type': 'application/json'
+            //     },
+            //     body: JSON.stringify({
+            //         username: 'Girish',
+            //         password: 'yash123'
+            //     })
+            // })
+            //     .then(
+            //         console.log(ans),
+            //         navigation.navigate('Home', { userID: 'A1' }
+            //         )
+            //     )
+            // axios.get('http://192.168.0.159:8080/customers/').then(res => {
+            //     console.log(res.data)
+            //     // console.log('uiuiu')
+            //     // navigation.navigate('Home', { userID: 'A1' })
+            // })
+            navigation.navigate('Home', { username: values.username })
+            // axios.post('http://192.168.0.159:8080/customers/login', { username: values.username, password: values.password }).then(res => {
+            //     console.log(res.data)
+            //     navigation.navigate('Home', { username: values.username })
+            //     // console.log('posrt')
+            // })
+            // console.log(ans[0])
+
+            // fetch('https://jsonplaceholder.typicode.com/todos/1')
+            //     .then(response => response.json())
+            //     .then(json => console.log(json))
+        }
+        catch (err) {
+            console.log(err)
+            // console.log('opopopop')
+        }
+
+        // console.log('yash')
+
+    }
+
     return (
         <View style={globalStyles.container}>
             <View style={styles.container}>
@@ -90,7 +144,12 @@ export default function Login({ navigation }) {
                                 value={props.values.password}
                             >
                             </TextInput>
-                            <Button title='Submit' color='maroon' onPress={() => loginHandle(props.values)}></Button>
+                            {conn == true &&
+                                <Button title='Submit' color='maroon' onPress={() => loginHandle(props.values)}></Button>
+                            }
+                            {conn == false &&
+                                <Button title='Submit' color='maroon' onPress={() => loginHandleOffline(props.values)}></Button>
+                            }
                         </View>
                     )}
                 </Formik>

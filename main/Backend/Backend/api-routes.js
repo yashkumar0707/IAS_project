@@ -26,6 +26,13 @@ router.route('/customers/:customer_id')
 router.route('/customers/login')
     .post(customerController.login);
 
+const Transaction = require('./transactionModels')
+
+var transactionController = require('./transactionController');
+
+router.route('/transactions/:username')
+    .get(transactionController.lastfive);
+
 
 
 module.exports = router;
