@@ -6,7 +6,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import NetInfo from "@react-native-community/netinfo";
-
+import AsyncStorage from '@react-native-community/async-storage';
 const ReviewSchema = yup.object({
     username: yup.string().required().min(4),
     password: yup.string().required().min(4),
@@ -54,7 +54,10 @@ export default function Login({ navigation }) {
 
             axios.post('http://192.168.0.159:8080/customers/login', { username: values.username, password: values.password }).then(res => {
                 console.log(res.data)
-                navigation.navigate('Home', { username: values.username })
+                if (res.data.message == "Customer Found")
+                    navigation.navigate('Home', { username: values.username, password: values.password })
+                else
+                    console.log('Inavlid Cred')
                 // console.log('posrt')
             })
             // console.log(ans[0])
@@ -96,7 +99,13 @@ export default function Login({ navigation }) {
             //     // console.log('uiuiu')
             //     // navigation.navigate('Home', { userID: 'A1' })
             // })
-            navigation.navigate('Home', { username: values.username })
+            let user = await AsyncStorage.getItem("username");
+            let pass = await AsyncStorage.getItem("password");
+            if (values.username == user && pass == values.password)
+                navigation.navigate('Home', { username: values.username })
+            else {
+                console.log('not hgapp')
+            }
             // axios.post('http://192.168.0.159:8080/customers/login', { username: values.username, password: values.password }).then(res => {
             //     console.log(res.data)
             //     navigation.navigate('Home', { username: values.username })

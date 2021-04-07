@@ -30,7 +30,12 @@ export default function Payment({ navigation, cache }) {
         socket.emit('chat message', values)
         socket.on("message", data => {
             if (data == "successful") {
-                navigation.navigate('Home')
+                navigation.navigate('Transaction', { sendinfo: "successful" })
+                // console.log('here')
+                socket.close()
+            }
+            if (data == "unsuccessful") {
+                navigation.navigate('Transaction', { sendinfo: "unsuccessful" })
                 // console.log('here')
                 socket.close()
             }
@@ -40,40 +45,48 @@ export default function Payment({ navigation, cache }) {
 
 
     const loginHandleOffline = async (values) => {
-        if (values.amount <= 200) {
-            values.username = getinfo.username
-            try {
-                await AsyncStorage.setItem("trans", JSON.stringify(values));
-            }
-            catch (err) {
-                console.log(err)
-            }
-            //testing async
-            try {
-                const value = await AsyncStorage.getItem("hello");
-                if (value !== null) {
-                    // We have data!!
-                    console.log(value);
-                    navigation.navigate('Home')
-                }
-            } catch (error) {
-                // Error retrieving data
-            }
-
-            try {
-                const value = await AsyncStorage.getItem("trans");
-                if (value !== null) {
-                    // We have data!!
-                    console.log(value);
-                    navigation.navigate('Home')
-                }
-            } catch (error) {
-                // Error retrieving data
-            }
+        const check = await AsyncStorage.getItem("trans_status");
+        const bal = await AsyncStorage.getItem("balance");
+        if (check == '1') {
+            sethigh('Offline Transaction already done')
         }
         else {
-            sethigh('Value not proper a')
-            return (<View><Text>Value not Proper</Text></View>)
+            if (values.amount <= 200 && bal > 200) {
+                values.username = getinfo.username
+                try {
+                    await AsyncStorage.setItem("trans", JSON.stringify(values));
+                    await AsyncStorage.setItem("trans_status", '1');
+                }
+                catch (err) {
+                    console.log(err)
+                }
+                //testing async
+                try {
+                    const value = await AsyncStorage.getItem("hello");
+                    if (value !== null) {
+                        // We have data!!
+                        console.log(value);
+                        // navigation.navigate('Home')
+                    }
+                } catch (error) {
+                    // Error retrieving data
+                }
+
+                try {
+                    const value = await AsyncStorage.getItem("trans");
+                    if (value !== null) {
+                        // We have data!!
+                        console.log(value);
+                        navigation.navigate('Home')
+                    }
+                } catch (error) {
+                    // Error retrieving data
+                }
+            }
+            else {
+                sethigh('Value out of limit! a')
+                return (<View><Text>Value out of limit! a</Text></View>)
+            }
         }
         // console.log('yash')
     };

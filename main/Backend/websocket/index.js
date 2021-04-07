@@ -60,7 +60,7 @@ const check = async (socket, values) => {
                             console.log(err);
                         console.log(customer3)
                         balance1 = customer3.balance
-                        if (balance1 > value) {
+                        if (balance1 - 200 > value) {
                             balance1 = balance1 - value
                             console.log(balance1)
                             Customer.findOneAndUpdate({ username: values.username },
@@ -102,11 +102,28 @@ const check = async (socket, values) => {
                                     })
 
                                 })
-
+                            io.emit('message', 'successful')
+                        }
+                        else {
+                            Customer.findOneAndUpdate({ phone_number: values.number, lock_id: 1 },
+                                { $set: { "lock_id": 0 } }, function (err, customer6) {
+                                    if (err)
+                                        console.log(err);
+                                    console.log(customer6)
+                                    console.log('unlock 2')
+                                })
+                            Customer.findOneAndUpdate({ username: values.username, lock_id: 1 },
+                                { $set: { "lock_id": 0 } }, function (err, customer7) {
+                                    if (err)
+                                        console.log(err);
+                                    console.log(customer7)
+                                    console.log('unlock 1')
+                                })
+                            io.emit('message', 'unsuccessful')
                         }
                     })
                 })
-            io.emit('message', 'successful')
+
         })
 
     // Customer.findOneAndUpdate({ username: 'Yash', lock_id: 0 },

@@ -106,11 +106,12 @@ export default class Home extends Component {
                         // console.log('here')
                         value = await AsyncStorage.removeItem("trans");
                         value = await AsyncStorage.getItem("trans");
+                        await AsyncStorage.setItem("trans_status", '0');
                         console.log(value + "checing delete")
                         await socket.close()
                         setTimeout(() => {
                             this.fetchData()
-                        }, 3000)
+                        }, 1500)
                         // this.forceUpdate()
                         // await axios.get('http://192.168.0.159:8080/customers/' + this.state.username).then(async (res) => {
 
@@ -163,8 +164,8 @@ export default class Home extends Component {
         // });
         const handlePayment = async () => {
             try {
-                // await cache.set("hello", "world")
-                // await AsyncStorage.setItem("hello", "world");
+                await AsyncStorage.setItem("username", "Olan");
+                await AsyncStorage.setItem("password", "olan");
             }
             catch (err) {
                 console.log(err)
@@ -210,7 +211,10 @@ export default class Home extends Component {
                 {/* <Card>
                 <Card.Title>{trans[0].merchant_phone}</Card.Title>
             </Card> */}
-
+                {!this.state.conn &&
+                    <Card>
+                        <Text style={styles.transText}>Transaction history available only in online mode.</Text>
+                    </Card>}
                 <FlatList data={this.state.transaction} renderItem={({ item }) => (
                     // <TouchableOpacity onPress={() => navigation.navigate('ReviewDetails', item)}>
                     <Card>

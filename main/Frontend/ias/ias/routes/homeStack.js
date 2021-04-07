@@ -4,6 +4,7 @@ import React from 'react';
 import Home from '../screens/home';
 import Login from '../screens/login';
 import Payment from '../screens/payments'
+import Transaction from '../screens/transaction'
 // import ReviewDetails from '../screens/reviewDetails';
 
 const screens = {
@@ -37,6 +38,12 @@ const screens = {
         screen: Payment,
         navigationOptions: {
             title: 'Payment'
+        }
+    },
+    Transaction: {
+        screen: Transaction,
+        navigationOptions: {
+            title: 'Transaction'
         }
     }
 
