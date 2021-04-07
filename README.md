@@ -1,4 +1,4 @@
-# IAS_project
+# IAS_project - M-Commerce Offline Payment
 ## How to run the project
 ### 1.Frontend
 #### npm start
