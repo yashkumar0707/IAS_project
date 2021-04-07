@@ -16,6 +16,10 @@ var transactionSchema = mongoose.Schema({
     merchant_phone: {
         type: Number,
         required: true
+    },
+    merchant_username: {
+        type: String,
+        required: true
     }
     // lock_id: {
     //     type: Number,

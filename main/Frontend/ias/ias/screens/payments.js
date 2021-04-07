@@ -20,11 +20,13 @@ const ReviewSchema = yup.object({
 
 export default function Payment({ navigation, cache }) {
     let getinfo = navigation.getParam('sendinfo')
+    let username = navigation.getParam('username')
+    const [high, sethigh] = useState('')
     console.log(getinfo.username, getinfo.conn)
     const loginHandle = (values) => {
         const socket = io("http://192.168.0.159:3001")
-        values.username = 'Yash'
-        //console.log('uash')
+        values.username = getinfo.username
+        console.log(values.username + 'checking before sending')
         socket.emit('chat message', values)
         socket.on("message", data => {
             if (data == "successful") {
@@ -38,17 +40,42 @@ export default function Payment({ navigation, cache }) {
 
 
     const loginHandleOffline = async (values) => {
-        try {
-            const value = await AsyncStorage.getItem("hello");
-            if (value !== null) {
-                // We have data!!
-                console.log(value);
-                navigation.navigate('Home')
+        if (values.amount <= 200) {
+            values.username = getinfo.username
+            try {
+                await AsyncStorage.setItem("trans", JSON.stringify(values));
             }
-        } catch (error) {
-            // Error retrieving data
+            catch (err) {
+                console.log(err)
+            }
+            //testing async
+            try {
+                const value = await AsyncStorage.getItem("hello");
+                if (value !== null) {
+                    // We have data!!
+                    console.log(value);
+                    navigation.navigate('Home')
+                }
+            } catch (error) {
+                // Error retrieving data
+            }
+
+            try {
+                const value = await AsyncStorage.getItem("trans");
+                if (value !== null) {
+                    // We have data!!
+                    console.log(value);
+                    navigation.navigate('Home')
+                }
+            } catch (error) {
+                // Error retrieving data
+            }
         }
-        console.log('yash')
+        else {
+            sethigh('Value not proper a')
+            return (<View><Text>Value not Proper</Text></View>)
+        }
+        // console.log('yash')
     };
     // navigation.navigate('Home', { userID: 'A1' })
     // client.onopen = () => {
@@ -85,13 +112,16 @@ export default function Payment({ navigation, cache }) {
                             >
                             </TextInput>
                             {getinfo.conn &&
-                                // <Button title='Send' color='maroon' onPress={() => loginHandle(props.values)}></Button>
                                 <Button title='Send' color='maroon' onPress={() => loginHandle(props.values)}></Button>
+                                // <Button title='Send' color='maroon' onPress={() => loginHandleOffline(props.values)}></Button>
 
                             }
                             {!getinfo.conn &&
+                                // <Button title='Send' color='maroon' onPress={() => loginHandle(props.values)}></Button>
+
                                 <Button title='Send' color='maroon' onPress={() => loginHandleOffline(props.values)}></Button>
                             }
+                            <Text style={styles.titleText}>{high}</Text>
                         </View>
                     )}
                 </Formik>

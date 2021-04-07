@@ -1,3 +1,4 @@
+
 Transaction = require('./transactionModels');
 exports.lastfive = function (req, res) {
     Transaction.get(function (err, transactions) {
@@ -9,8 +10,9 @@ exports.lastfive = function (req, res) {
         }
         // console.log(req.params.username);
         user = req.params.username;
+        merch_user = req.params.merchant_username;
         Transaction.find(
-            { username: user },
+            { $or: [{ username: user }, { merchant_username: user }] },
             null,
             { sort: { 'create_date': 'desc' }, limit: 5 },
             function (error, last_five_transactions) {
@@ -27,3 +29,4 @@ exports.lastfive = function (req, res) {
     // console.log(posts)  
 
 };
+// $or: [{ name: "Rambo" }, { breed: "Pugg" }

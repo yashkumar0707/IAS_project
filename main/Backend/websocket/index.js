@@ -37,7 +37,10 @@ const check = async (socket, values) => {
     console.log('from ' + socket)
 
     console.log(values)
+
+    // values = await JSON.parse(values)
     let value = values.amount
+    console.log('username is' + values.username)
     Customer.findOneAndUpdate({ username: values.username, lock_id: 0 },
         { $set: { "lock_id": 1 } }, function (err, customer1) {
             if (err)
@@ -91,7 +94,8 @@ const check = async (socket, values) => {
                                     const trans = new Transaction({
                                         amount: values.amount,
                                         username: values.username,
-                                        merchant_phone: values.number
+                                        merchant_phone: values.number,
+                                        merchant_username: customer5.username
                                     });
                                     trans.save(function (err) {
                                         console.log(err)
