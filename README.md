@@ -1,8 +1,8 @@
 # IAS_project
 ## How to run the project
-### Frontend
-### npm start
-### Backend
-### node index
-### Web Socket
-### node index
+### 1.Frontend
+#### npm start
+### 2.Backend
+#### node index
+### 3.Web Socket
+#### node index
